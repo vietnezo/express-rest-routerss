@@ -6,6 +6,7 @@
     "type": "git",
     "url": "git+https://github.com/vietnezo/express-rest-routerss"
   },
+  "types": "index.d.ts",
   "files": [
     "index.js",
     "index.mjs",

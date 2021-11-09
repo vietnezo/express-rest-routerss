@@ -20,4 +20,4 @@ app.use('/example', (req, res, next) => {
 app.use(nnn(options))
 
 app.listen(port)
-console.log(`Check express-rest-router at localhost:${port}`)
+console.log(`Check express-rest-routerss at localhost:${port}`)

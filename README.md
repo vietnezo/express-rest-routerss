@@ -1,22 +1,22 @@
-# express-rest-router
+# express-rest-routerss
 
-express-rest-router is library for dynamic nested routes
+express-rest-routerss is library for dynamic nested routes
 
 ## Installation
 
 ```sh
-npm install express-rest-router
+npm install express-rest-routerss
 ```
 or with yarn
 ```sh
-yarn add express-rest-router
+yarn add express-rest-routerss
 ```
 
 ## Usage
 
 ### Example:
 ```js
-const nnn = require('express-rest-router')
+const restRouter = require('express-rest-routerss')
 const express = require('express')
 const app = express()
 const router = express()
@@ -27,7 +27,7 @@ const options = {
   baseRouter: router   // NOT RQUIRED
 }
 
-app.use(nnn(options))
+app.use(restRouter(options))
 ```
 When you use both of routeDir and absolutePath, absolutePath overrides routeDir
 
@@ -59,7 +59,7 @@ each js file's form
 
 ```js
 exports.get = (req, res) => {
-  res.send('express-rest-router')
+  res.send('express-rest-routerss')
 }
 ```
 
@@ -67,7 +67,7 @@ or
 
 ```js
 module.exports = (req, res) => {
-  res.send('express-rest-router')
+  res.send('express-rest-routerss')
 }
 ```
 ### Use middlewares:
