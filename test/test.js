@@ -1,4 +1,4 @@
-const nnn = require('../index')
+const restRouters = require('../index')
 const express = require('express')
 const app = express()
 const router = express()
@@ -17,7 +17,7 @@ app.use('/example', (req, res, next) => {
   next()
 })
 
-app.use(nnn(options))
+app.use(restRouters(options))
 
 app.listen(port)
 console.log(`Check express-rest-routerss at localhost:${port}`)

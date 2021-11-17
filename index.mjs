@@ -70,7 +70,7 @@ const reqmethods = [
   'post',
   'put',
   'delete',
-  'connnect',
+  'connect',
   'options',
   'trace',
   'patch',
