@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 module.exports = (options = {}) => {
-  const routeDir = ('routeDir' in options) ? options.routeDir : '/routes'
+  const routeDir = 'routeDir' in options ? options.routeDir : '/routes'
   const filePattern = '**/@(*.js|*.ts)'
   const usePath = options.absolutePath === undefined ? process.cwd() + routeDir.replace('./', '/') : options.absolutePath
 
@@ -13,7 +13,7 @@ module.exports = (options = {}) => {
         throw new Error('invalid filename use HTTP method')
       }
     } catch (error) {
-      console.error("ERROR:", error)
+      console.error('ERROR:', error)
     }
 
     const cut = '/' + path.replace('.js', '').replace('.ts', '').replace(/_/g, ':')
@@ -24,46 +24,46 @@ module.exports = (options = {}) => {
   }, {})
 
   // Descending sort for exception handling at dynamic routes
-  const sortedPaths = Object.entries(pathObj).sort((a, b) => a < b ? 1 : -1)
-  // Sort middleware to the top of the array
-  const middlewareSort = sortedPaths.filter(a => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) === 'middleware').concat(sortedPaths.filter(a => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) !== 'middleware'))
+  const sortedPaths = Object.entries(pathObj).sort((a, b) => (a[1] < b[1] ? 1 : -1))
   const temporary = options.baseRouter === undefined ? router : options.baseRouter
 
-  middlewareSort.forEach(([filePath, routePath]) => {
+  // Sort middleware to the top of the array
+  const allRouteMiddlewares = sortedPaths.filter((a) => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) === 'middleware')
+  const routes = sortedPaths.filter((a) => a[0].slice(a[0].lastIndexOf('/') + 1).slice(0, 'middleware'.length) !== 'middleware')
+
+  routes.forEach(([filePath, routePath]) => {
     const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
-    const method = methodName === 'middleware' ? 'use' : methodName
     const handler = require(filePath)
-    if (handler.middleware) {
-      handler.middleware.forEach(middleware => {
-        temporary[method](routePath, middleware)
-      })
-      temporary[method](routePath, handler)
-    } else if (typeof handler === 'function') {
-      temporary[method](routePath, handler)
-    } else if (typeof handler === 'object') {
-      Object.values(handler).forEach(fun => {
-        temporary[method](routePath, fun)
-      })
+    const routeMiddlewares = allRouteMiddlewares
+      .filter(([filePathMdw, routePathMdw]) => routePath.includes(routePathMdw))
+      .sort((a, b) => (a[1] > b[1] ? 1 : -1))
+
+    if (routeMiddlewares.length > 0) {
+      const middlewareHandlers = routeMiddlewares
+        .map(([filePathMdw, routePathMdw]) => getHandler(require(filePathMdw)))
+        .filter((handler) => !!handler)
+      temporary[methodName](routePath, middlewareHandlers, getHandler(handler))
+    } else {
+      temporary[methodName](routePath, getHandler(handler))
     }
   })
   return temporary
 }
 
-const reqmethods = [
-  'get',
-  'head',
-  'post',
-  'put',
-  'delete',
-  'connect',
-  'options',
-  'trace',
-  'patch',
-  'middleware'
-]
+const reqmethods = ['get', 'head', 'post', 'put', 'delete', 'connect', 'options', 'trace', 'patch', 'middleware']
 
 const throwerror = (path) => {
-  return reqmethods.map(method => {
+  return reqmethods.map((method) => {
     return path.indexOf(method)
   })
+}
+
+const getHandler = (handler) => {
+  if (typeof handler === 'function') {
+    return handler
+  }
+  if (typeof handler === 'object') {
+    return handler.default
+  }
+  return null
 }
