@@ -63,7 +63,7 @@ const getHandler = (handler) => {
     return handler
   }
   if (typeof handler === 'object') {
-    return handler.default
+    return handler.default ? handler.default : Object.values(handler)[0]
   }
   return null
 }

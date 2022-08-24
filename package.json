@@ -1,6 +1,6 @@
 {
   "name": "express-rest-routerss",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index",
   "repository": {
     "type": "git",
@@ -9,21 +9,18 @@
   "types": "index.d.ts",
   "files": [
     "index.js",
-    "index.mjs",
     "package.json",
     "README.md",
     "test"
   ],
-  "author": "Calvin Chan",
+  "author": "vietnezo",
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "glob": "^7.1.4"
   },
   "exports": {
-    "import": "./index.mjs",
     "require": "./index.js",
-    "node": "./index.mjs",
     "default": "./index.js"
   }
 }

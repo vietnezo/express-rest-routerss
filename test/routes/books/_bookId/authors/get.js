@@ -1,3 +1,3 @@
 module.exports = (req, res) => {
-  res.send(req.params)
+  return res.send(req.params)
 }
