@@ -34,6 +34,11 @@ module.exports = (options = {}) => {
   routes.forEach(([filePath, routePath]) => {
     const methodName = filePath.split('/').slice(-1)[0].replace('.js', '').replace('.ts', '')
     const handler = require(filePath)
+    const routeHandler = getHandler(handler)
+    if (!routeHandler) {
+      return
+    }
+
     const routeMiddlewares = allRouteMiddlewares
       .filter(([filePathMdw, routePathMdw]) => routePath.includes(routePathMdw))
       .sort((a, b) => (a[1] > b[1] ? 1 : -1))
@@ -41,10 +46,10 @@ module.exports = (options = {}) => {
     if (routeMiddlewares.length > 0) {
       const middlewareHandlers = routeMiddlewares
         .map(([filePathMdw, routePathMdw]) => getHandler(require(filePathMdw)))
-        .filter((handler) => !!handler)
-      temporary[methodName](routePath, middlewareHandlers, getHandler(handler))
+        .filter((mdwHandler) => !!mdwHandler)
+      temporary[methodName](routePath, middlewareHandlers, routeHandler)
     } else {
-      temporary[methodName](routePath, getHandler(handler))
+      temporary[methodName](routePath, routeHandler)
     }
   })
   return temporary
