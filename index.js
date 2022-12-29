@@ -40,7 +40,7 @@ module.exports = (options = {}) => {
     }
 
     const routeMiddlewares = allRouteMiddlewares
-      .filter(([filePathMdw, routePathMdw]) => routePath == routePathMdw)
+      .filter(([filePathMdw, routePathMdw]) => routePath == routePathMdw || routePath.includes(`${routePathMdw}/`))
       .sort((a, b) => (a[1] > b[1] ? 1 : -1))
 
     if (routeMiddlewares.length > 0) {
